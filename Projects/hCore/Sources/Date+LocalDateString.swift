@@ -1,6 +1,12 @@
 import Foundation
 
 extension Date {
+    public static func date(from localDateString: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.date(from: localDateString)
+    }
+    
 	public var localDateString: String? {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "yyyy-MM-dd"

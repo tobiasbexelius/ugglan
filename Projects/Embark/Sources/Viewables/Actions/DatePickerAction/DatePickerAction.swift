@@ -50,7 +50,6 @@ extension EmbarkDatePickerAction: Viewable {
         if #available(iOS 14.0, *) {
             datePicker.preferredDatePickerStyle = .inline
         }
-        datePicker.date = Date()
         
         let titleLabel = UILabel()
         titleLabel.style = .brand(.body(color: .primary))
@@ -95,8 +94,17 @@ extension EmbarkDatePickerAction: Viewable {
         
         return (mainView, Signal { callback in
             
+            if let prefilledDate = self.state.store.getPrefillValue(key: data.storeKey) {
+                let date = Date.date(from: prefilledDate) ?? Date()
+                datePicker.date = date
+            }
+            
             bag += button.onTapSignal.onValue {
                 self.state.store.setValue(key: data.storeKey, value: datePicker.date.localDateString)
+                
+                if let passageName = self.state.passageNameSignal.value {
+                    self.state.store.setValue(key: "\(passageName)Result", value: datePicker.date.localDateString)
+                }
                 
                 self.state.store.createRevision()
                 
